@@ -1,0 +1,45 @@
+version: "3.8"
+services:
+  fastapi:
+    build:
+      context: .
+    image: hf_analysis_app
+    container_name: hf_analysis_fastapi
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    volumes:
+      - ./app/storage:/app/app/storage
+    ports:
+      - "8000:8000"
+    depends_on:
+      - rabbitmq
+      - redis
+      - celery
+
+  celery:
+    build:
+      context: .
+    image: hf_analysis_app
+    container_name: hf_analysis_celery
+    command: celery -A app.tasks worker --loglevel=info
+    volumes:
+      - ./app/storage:/app/app/storage
+    depends_on:
+      - rabbitmq
+      - redis
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password

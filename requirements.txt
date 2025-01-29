@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+celery
+redis
+pydantic
+python-multipart
+
+
+# Hugging Face & PyTorch
+torch==2.4.1
+# triton
+transformers==4.46.3
+safetensors==0.4.5
+
+# Possibly needed for image handling
+Pillow
+# If you need more image libraries, e.g. opencv-python
